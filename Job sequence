@@ -1,0 +1,59 @@
+// job sequencing Tamim Hossain (39)
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+
+    int x;
+    cout << "Insert Number of Tasks: ";
+    cin >> x;
+
+    vector <pair<int, int>> v2, v1;
+    vector <int> v(x, 0);
+
+    int a[x], b[x];
+    cout << "\nRemaining_Days   Earning\n";
+    for (int i=0; i<x; i++) {
+        cin >> a[i];
+        cin >> b[i];
+        v2.push_back({b[i], a[i]});
+        v1.push_back({b[i], i});
+    }
+
+    sort(v2.rbegin(), v2.rend());
+    sort(v1.rbegin(), v1.rend());
+
+    int seq[x+1];
+    memset(seq, -1, sizeof(seq));
+
+    for (int i=0; i<v2.size(); i++) {
+        int in = v2[i].second;
+        if (seq[in] == -1) {
+            seq[in] = v1[i].second+1;
+        }
+        else {
+            for (int j=1; j<=x; j++) {
+                if (seq[j] == -1) {
+                    if (v2[i].second >= j) {
+                        seq[j] = v1[i].second+1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    cout << endl;
+    int cnt = 1;
+    for (int i=1; i<=x; i++) {
+        if (seq[i] == -1) continue;
+        cout << "On day " << cnt << " he will do task no --> ";
+        cout << seq[i] << endl;
+        cnt++;
+    }
+    cout << endl;
+
+    return 0;
+}
