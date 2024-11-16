@@ -1,0 +1,73 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+// Kruskal's DSU
+
+const int N = 2*1e5+5;
+vector <int> parent(N);
+vector <int> union_size(N);
+
+void make_set(int vertex)
+{
+    parent[vertex] = vertex;
+    union_size[vertex] = 1;
+}
+int find_set(int vertex)
+{
+    if (vertex == parent[vertex]) {
+        return vertex;
+    }
+    return parent[vertex] = find_set(parent[vertex]);
+}
+void union_set(int n1, int n2)
+{
+    n1 = find_set(n1);
+    n2 = find_set(n2);
+    if (n1 != n2) {
+        if (union_size[n1] < union_size[n2]) {
+            swap(n1, n2);
+        }
+        parent[n2] = n1;
+        union_size[n1] += union_size[n2];
+    }
+}
+
+
+int main() {
+
+        ios::sync_with_stdio(false);
+        cin.tie(nullptr);
+
+        for (int i=1; i<=N; i++) {
+            make_set(i);
+        }
+        int nodes, edges;
+        cin >> nodes >> edges;
+        vector <vector<int>> graph;
+        for (int i=0; i<edges; i++) {
+            int n1, n2, wt;
+            cin >> n1 >> n2 >> wt;
+            graph.push_back({wt, n1, n2});
+        }
+        sort(graph.begin(), graph.end());
+        int totalcost = 0;
+        vector <pair<int, int>> ans;
+        for (auto it: graph) {
+            int cost = it[0];
+            int n1 = it[1];
+            int n2 = it[2];
+            int check1 = find_set(n1);
+            int check2 = find_set(n2);
+            if (check1 != check2) {
+                ans.push_back({n1, n2});
+                totalcost += cost;
+                union_set(n1, n2);
+            }
+        }
+        cout << totalcost << endl;
+        for (auto it: ans) {
+            cout << it.first << " " << it.second << endl;
+        }
+
+ return 0;
+}
